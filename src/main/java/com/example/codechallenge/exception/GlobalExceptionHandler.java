@@ -16,4 +16,6 @@ public class GlobalExceptionHandler {
         apiResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+
+
 }

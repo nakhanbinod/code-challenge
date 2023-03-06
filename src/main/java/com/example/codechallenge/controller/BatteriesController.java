@@ -7,25 +7,18 @@ import com.example.codechallenge.service.BatteriesService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/rest/")
 @AllArgsConstructor
-@Validated
 public class BatteriesController {
-
     private final BatteriesService batteriesService;
 
-    @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addBatteries(@Valid @RequestBody List<BatteriesDto> batteriesList){
+    @PostMapping("/save")
+    public ResponseEntity<ApiResponse> addBatteries(@RequestBody List<BatteriesDto> batteriesList){
         try {
             batteriesService.addBatteries(batteriesList);
         }catch (Exception ex){
@@ -34,5 +27,11 @@ public class BatteriesController {
         return RestResponse.message("Successfully batteries added", HttpStatus.OK);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse> batteriesListByPostCode(@RequestParam int postCodeFrom, @RequestParam int postCodeTo){
+        List<BatteriesDto> batteriesDtoList =  batteriesService.getBatteriesByPostCodeRange(postCodeFrom, postCodeTo);
+        return RestResponse.response("Date fetch Success", HttpStatus.FOUND, "batteries", batteriesDtoList);
+
+    }
 
 }

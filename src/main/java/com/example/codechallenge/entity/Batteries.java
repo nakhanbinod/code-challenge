@@ -16,8 +16,8 @@ public class Batteries {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    private String postCode;
-    private String watt;
+    private int postCode;
+    private int watt;
 
 
 }
