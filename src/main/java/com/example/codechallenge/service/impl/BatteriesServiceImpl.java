@@ -35,11 +35,30 @@ public class BatteriesServiceImpl implements BatteriesService {
     @Override
     public List<BatteriesDto> getBatteriesByPostCodeRange(int postCodeFrom, int postCodeTo) {
         List<Batteries> batteriesList = batteriesRepository.findByPostCodeBetween(postCodeFrom, postCodeTo);
-        List<BatteriesDto> batteriesDtos = batteriesList.stream()
+
+        List<Batteries> filteredBatteries = batteriesList.stream()
                 .filter(batteries -> batteries.getPostCode() >= postCodeFrom && batteries.getPostCode() <= postCodeTo)
+                .collect(Collectors.toList());
+        double totalWattCapacity = filteredBatteries.stream()
+                .mapToDouble(Batteries::getWatt)
+                .sum();
+
+        double averageWattCapacity = filteredBatteries.stream()
+                .mapToDouble(Batteries::getWatt)
+                .average()
+                .orElse(Double.NaN);
+
+        List<BatteriesDto> batteriesDtos = filteredBatteries.stream()
                 .map(batteries -> new BatteriesDto(batteries.getName(), batteries.getPostCode(), batteries.getWatt()))
                 .sorted(Comparator.comparing(BatteriesDto::getName, String.CASE_INSENSITIVE_ORDER))
-                .toList();
+                .collect(Collectors.toList());
+
+        if (!batteriesDtos.isEmpty()) {
+            BatteriesDto firstBattery = batteriesDtos.get(0);
+            firstBattery.setTotalWattCapacity(totalWattCapacity);
+            firstBattery.setAverageWattCapacity(averageWattCapacity);
+        }
+
         return batteriesDtos;
     }
 
