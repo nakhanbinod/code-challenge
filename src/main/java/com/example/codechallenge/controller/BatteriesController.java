@@ -29,7 +29,7 @@ public class BatteriesController {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> batteriesListByPostCode(@RequestParam int postCodeFrom, @RequestParam int postCodeTo){
-        List<BatteriesDto> batteriesDtoList =  batteriesService.getBatteriesByPostCodeRange(postCodeFrom, postCodeTo);
+        Object batteriesDtoList =  batteriesService.getBatteriesByPostCodeRange(postCodeFrom, postCodeTo);
         return RestResponse.response("Date fetch Success", HttpStatus.FOUND, "batteries", batteriesDtoList);
 
     }

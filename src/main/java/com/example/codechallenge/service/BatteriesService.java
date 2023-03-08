@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface BatteriesService {
     void addBatteries(List<BatteriesDto> batteriesDtos);
-    List<BatteriesDto> getBatteriesByPostCodeRange(int postCodeFrom, int postCodeTo);
+    Object getBatteriesByPostCodeRange(int postCodeFrom, int postCodeTo);
 
 }

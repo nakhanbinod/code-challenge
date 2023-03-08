@@ -33,12 +33,12 @@ public class BatteriesServiceImpl implements BatteriesService {
     }
 
     @Override
-    public List<BatteriesDto> getBatteriesByPostCodeRange(int postCodeFrom, int postCodeTo) {
+    public Object getBatteriesByPostCodeRange(int postCodeFrom, int postCodeTo) {
         List<Batteries> batteriesList = batteriesRepository.findByPostCodeBetween(postCodeFrom, postCodeTo);
 
         List<Batteries> filteredBatteries = batteriesList.stream()
                 .filter(batteries -> batteries.getPostCode() >= postCodeFrom && batteries.getPostCode() <= postCodeTo)
-                .collect(Collectors.toList());
+                .toList();
         double totalWattCapacity = filteredBatteries.stream()
                 .mapToDouble(Batteries::getWatt)
                 .sum();
@@ -53,13 +53,18 @@ public class BatteriesServiceImpl implements BatteriesService {
                 .sorted(Comparator.comparing(BatteriesDto::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
 
+        List<Object> responseList = new ArrayList<>();
         if (!batteriesDtos.isEmpty()) {
-            BatteriesDto firstBattery = batteriesDtos.get(0);
-            firstBattery.setTotalWattCapacity(totalWattCapacity);
-            firstBattery.setAverageWattCapacity(averageWattCapacity);
+           responseList.addAll(batteriesDtos);
+            Map<String, Double> capacityMap = new HashMap<>();
+            capacityMap.put("totalWattCapacity", totalWattCapacity);
+            capacityMap.put("averageWattCapacity", averageWattCapacity);
+            responseList.add(capacityMap);
+        }else{
+            throw new ApplicationException("No Data Found");
         }
 
-        return batteriesDtos;
+        return responseList;
     }
 
 

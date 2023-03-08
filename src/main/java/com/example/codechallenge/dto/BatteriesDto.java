@@ -16,7 +16,5 @@ public class BatteriesDto {
     private String name;
     private int postCode;
     private int watt;
-    private double totalWattCapacity;
-    private double averageWattCapacity;
 
 }
